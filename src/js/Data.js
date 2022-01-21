@@ -1,5 +1,4 @@
 import fetchData from './utils/fetchData.js'
-import formatNumber from './utils/formatNumber.js'
 
 class Data {
   constructor(data) {
@@ -10,7 +9,7 @@ class Data {
   }
 
   get years() {
-    let years = []
+    let years = new Array()
     this.data.forEach(obj => {
       if (!years.includes(obj['ano'])) {
         years.push(obj['ano'])
@@ -31,36 +30,30 @@ class Data {
     return count
   }
 
+  getSingleKeyValues(year, key) {
+    const values = new Array()
+    this.dataByYear(year).forEach(obj => {
+      values.push(obj[key])
+    })
+    return values
+  }
+
+  maxOf = (year, key) => {
+    const max = Math.max.apply(Math, this.getSingleKeyValues(year, key))
+    return this.dataByYear(year).find(obj => Number(obj[key]) === max)
+  }
+
+  minOf = (year, key) => {
+    const min = Math.min.apply(Math, this.getSingleKeyValues(year, key))
+    return this.dataByYear(year).find(obj => Number(obj[key]) === min)
+  }
+
   get poblationPerYear() {
-    let poblation = []
+    let poblation = new Array()
     this.years.forEach(year => {
       poblation.push(this.poblationByYear(year))
     })
     return poblation
-  }
-
-  drawTable(year, element) {
-    this.dataByYear(year).forEach(item => {
-      const tr = document.createElement('tr')
-      tr.innerHTML = `
-      <td class="px-2 py-4">${item['departamento']}</td>
-      <td class="px-2 py-4">
-        ${formatNumber(item['poblacion_5_16'])}
-      </td>
-      <td class="px-2 py-4">${item['aprobacion']} %</td>
-      <td class="px-2 py-4">${item['desercion']} %</td>
-    `
-      element.appendChild(tr)
-    })
-  }
-
-  drawOptions(element) {
-    this.years.forEach(year => {
-      const opt = document.createElement('option')
-      opt.value = year
-      opt.innerHTML = year
-      element.appendChild(opt)
-    })
   }
 
   static async build(API) {
