@@ -1,7 +1,6 @@
 import 'https://cdn.jsdelivr.net/npm/chart.js'
 
-const printChart = args => {
-  const { labels, label, data, element } = args
+const printChart = ({ labels, label, data, element }) => {
   const config = {
     type: 'line',
     data: {
